@@ -1,6 +1,8 @@
 var Discord = require('discord.io');
 var logger = require('winston');
 var auth = require('./auth.json');
+const WEEKDAYS = ['Sunday', 'Monday', 'Thuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -17,6 +19,7 @@ bot.on('ready', function (evt) {
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
 });
+
 bot.on('message', function (user, userID, channelID, message, evt) {
      if(message.substring(0, 21) == '<@490604527796486184>'){
        var args = message.substring(21).split(' ');
@@ -36,6 +39,14 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                bot.sendMessage({
                    to: channelID,
                    message: '<@!294957314207645696> är admin!'
+               });
+           break;
+           case 'när':
+            let date = new Date();
+            let day = date.getDay();
+               bot.sendMessage({
+                   to: channelID,
+                   message: 'It is ' + WEEKDAYS[day]
                });
            break;
            case 'visa':
