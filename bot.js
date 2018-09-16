@@ -1,8 +1,8 @@
 var Discord = require('discord.io');
 var logger = require('winston');
 var auth = require('./auth.json');
-const WEEKDAYS = ['Sunday', 'Monday', 'Thuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-
+const WEEKDAYS = ['Sunday', 'Monday', 'Thuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const SENSEI_BOT = '<@490604527796486184>'
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -21,11 +21,44 @@ bot.on('ready', function (evt) {
 });
 
 bot.on('message', function (user, userID, channelID, message, evt) {
-     if(message.substring(0, 21) == '<@490604527796486184>'){
+     if(message.substring(0, 21) == SENSEI_BOT){
        var args = message.substring(21).split(' ');
+       var msg = message.substring(22);
        var cmd = args[1];
        logger.info('cmd: ' + cmd + ' args: ' + args)
+       logger.info('msg: ' + msg)
 
+       if (msg == "när är nästa lektion?"){
+        let date = new Date();
+        let day = date.getDay();
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        h = (hour < 10?'0':'') + hour,
+        m = (minute < 10?'0':'') + minute;
+
+        lektionstiderStr = ['','10:00-11:45', '15:00-16:45', '12:00-13:45', '09:00-10:45', '09:00-10:45', ''];
+        lektionsstart = [0 ,10, 15, 12, 09, 09, 0];
+
+        if (lektionsstart[day] > hour){
+          bot.sendMessage({
+              to: channelID,
+              message: 'Nästa lektion är idag klockan ' + lektionstiderStr[day] + '!'
+          });
+        }
+        else if (lektionsstart[day] < hour) {
+          bot.sendMessage({
+              to: channelID,
+              message: 'Nästa lektion är imorgon klockan ' + lektionstiderStr[day+1] + '!'
+          });
+        }
+        else {
+          bot.sendMessage({
+              to: channelID,
+              message: 'Ops! Något gick fel!'
+          });
+        }
+
+       }
        //args = args.splice(1);
        switch(cmd.toLowerCase()) {
            // !ping
@@ -39,14 +72,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                bot.sendMessage({
                    to: channelID,
                    message: '<@!294957314207645696> är admin!'
-               });
-           break;
-           case 'när':
-            let date = new Date();
-            let day = date.getDay();
-               bot.sendMessage({
-                   to: channelID,
-                   message: 'It is ' + WEEKDAYS[day]
                });
            break;
            case 'visa':
