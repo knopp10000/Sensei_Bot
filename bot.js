@@ -1,6 +1,10 @@
 var Discord = require('discord.io');
 var logger = require('winston');
 var auth = require('./auth.json');
+const rp = require('request-promise');
+const cheerio = require('cheerio');
+const table = require('cli-table');
+
 const WEEKDAYS = ['Sunday', 'Monday', 'Thuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const SENSEI_BOT = '<@490604527796486184>'
 // Configure logger settings
@@ -36,8 +40,8 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         h = (hour < 10?'0':'') + hour,
         m = (minute < 10?'0':'') + minute;
 
-        lektionstiderStr = ['','10:00-11:45', '15:00-16:45', '12:00-13:45', '09:00-10:45', '09:00-10:45', ''];
-        lektionsstart = [0 ,10, 15, 12, 09, 09, 0];
+        lektionstiderStr = ['','14:00-15:45', '9:00-10:45', '10:00-11:45', '', '10:00-11:45', ''];
+        lektionsstart = [0 ,14, 9, 10, 0, 10, 0];
 
         if (lektionsstart[day] > hour){
           bot.sendMessage({
